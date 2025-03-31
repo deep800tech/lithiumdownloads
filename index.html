@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lithium's vault</title>
+  <link rel="icon" type="image/x-icon" href="https://fav.farm/%F0%9F%8E%B1">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+      background: pink;
+      cursor: url('cursor.png'), auto;
+    }
+    canvas#stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    header {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    header button {
+      border: none;
+      background: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    header button.active, header button:hover {
+      background: #ff69b4;
+      color: white;
+      transform: scale(1.1);
+    }
+    .tab-content {
+      display: none;
+      padding: 40px;
+      animation: fadeIn 0.5s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .fancy-button {
+      display: inline-block;
+      padding: 15px 30px;
+      background: #fff;
+      color: #333;
+      border-radius: 25px;
+      font-weight: bold;
+      transition: 0.3s ease;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      text-decoration: none;
+    }
+    .fancy-button:hover {
+      background: #ff69b4;
+      color: white;
+      transform: scale(1.05);
+    }
+    footer {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 0.9rem;
+      color: white;
+      text-shadow: 0 0 5px black;
+      cursor: pointer;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+  <header>
+    <button class="tab-btn active" data-tab="scripts">Lithium Scripts</button>
+    <button class="tab-btn" data-tab="bonus">Bonus</button>
+  </header>
+
+  <div id="scripts" class="tab-content active">
+    <button class="fancy-button" onclick="downloadPC()">PC Tester</button>
+    <p id="status"></p>
+  </div>
+
+  <div id="bonus" class="tab-content">
+    <p class="fancy-button">More Coming Soon!</p>
+  </div>
+
+  <footer onclick="alert('Made by Lithium, here you can download things.')">
+    Site Info
+  </footer>
+
+  <script>
+    // Tab Switcher
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // PC Tester Download
+    function downloadPC() {
+      const link = document.createElement('a');
+      link.href = "https://lithiumsx.github.io/lithiumdownloads/pc_tester.py";
+      link.download = "pc_tester.py";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      const statusText = document.getElementById("status");
+      statusText.textContent = "Downloading file...";
+      setTimeout(() => {
+        statusText.textContent = "Finished!";
+      }, 1500);
+    }
+
+    // Falling Stars
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    for (let i = 0; i < 100; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2,
+        speed: Math.random() * 1.5 + 0.5
+      });
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'white';
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += star.speed;
+        if (star.y > canvas.height) star.y = 0;
+      }
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+  </script>
+</body>
+</html>

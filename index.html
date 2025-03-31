@@ -44,7 +44,7 @@
     .tab-content.active {
       display: block;
     }
-    .fancy-button, #playButton {
+    .fancy-button {
       padding: 15px 30px;
       border-radius: 25px;
       font-weight: bold;
@@ -55,18 +55,10 @@
       box-shadow: 0 0 10px rgba(0,0,0,0.2);
       transition: 0.3s;
     }
-    .fancy-button:hover, #playButton:hover {
+    .fancy-button:hover {
       background: #ff69b4;
       color: white;
       transform: scale(1.05);
-    }
-    #playButton {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-image: url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDA...");
-      background-size: cover;
-      color: white;
     }
   </style>
 </head>
@@ -86,9 +78,7 @@
     <p class="fancy-button">More coming soon!</p>
   </div>
 
-  <button id="playButton">Play</button>
-
-  <iframe id="bg-music" width="0" height="0" style="visibility:hidden;position:absolute;" allow="autoplay" src=""></iframe>
+  <audio id="bg-audio" src="HELLO.mp3" loop></audio>
 
   <script>
     // Tabs
@@ -139,10 +129,33 @@
     }
     drawStars();
 
-    // Music play button
-    document.getElementById('playButton').addEventListener('click', () => {
-      const iframe = document.getElementById('bg-music');
-      iframe.src = 'https://www.youtube.com/embed/B9synWjqBn8?autoplay=1&loop=1&playlist=B9synWjqBn8';
+    // Background audio fade-in and fade-out loop
+    const audio = document.getElementById('bg-audio');
+    let volume = 0;
+    audio.volume = volume;
+    audio.play().catch(() => {});
+
+    const fadeIn = setInterval(() => {
+      if (volume < 1) {
+        volume += 0.01;
+        audio.volume = volume;
+      } else {
+        clearInterval(fadeIn);
+      }
+    }, 50);
+
+    audio.addEventListener('ended', () => {
+      audio.currentTime = 0;
+      volume = 0;
+      audio.play();
+      const fade = setInterval(() => {
+        if (volume < 1) {
+          volume += 0.01;
+          audio.volume = volume;
+        } else {
+          clearInterval(fade);
+        }
+      }, 50);
     });
   </script>
 </body>

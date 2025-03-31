@@ -6,70 +6,56 @@
   <title>lithium's vault</title>
   <link rel="icon" type="image/x-icon" href="https://fav.farm/%F0%9F%8E%B1">
   <style>
-    * {
+    body {
       margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html, body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
       background: pink;
-      cursor: url('cursor.png'), auto;
+      overflow: hidden;
     }
     canvas#stars {
       position: fixed;
       top: 0;
       left: 0;
       z-index: -1;
-      pointer-events: none;
     }
     header {
       display: flex;
       justify-content: center;
       gap: 20px;
       padding: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    header button {
-      border: none;
-      background: white;
+    .tab-btn {
       padding: 10px 20px;
       border-radius: 20px;
+      background: white;
+      border: none;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: 0.3s ease;
     }
-    header button.active, header button:hover {
+    .tab-btn.active, .tab-btn:hover {
       background: #ff69b4;
       color: white;
-      transform: scale(1.1);
     }
     .tab-content {
       display: none;
-      padding: 40px;
-      animation: fadeIn 0.5s ease;
+      padding: 20px;
     }
     .tab-content.active {
       display: block;
     }
-    .fancy-button {
-      display: inline-block;
+    .fancy-button, #playButton {
       padding: 15px 30px;
-      background: #fff;
-      color: #333;
       border-radius: 25px;
       font-weight: bold;
-      transition: 0.3s ease;
+      background: white;
+      color: #333;
       cursor: pointer;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
-      text-decoration: none;
+      border: none;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      transition: 0.3s;
     }
-    .fancy-button:hover {
+    .fancy-button:hover, #playButton:hover {
       background: #ff69b4;
       color: white;
       transform: scale(1.05);
@@ -78,9 +64,86 @@
       position: fixed;
       bottom: 20px;
       right: 20px;
-      padding: 15px 30px;
-      font-weight: bold;
-      font-size: 1rem;
-      border-radius: 25px;
-      cursor: pointer;
-      background-image: url("data:image/jpeg;base64,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
+      background-image: url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDA...");
+      background-size: cover;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="stars"></canvas>
+
+  <header>
+    <button class="tab-btn active" data-tab="scripts">Lithium Scripts</button>
+    <button class="tab-btn" data-tab="bonus">Bonus</button>
+  </header>
+
+  <div id="scripts" class="tab-content active">
+    <a class="fancy-button" href="https://lithiumsx.github.io/lithiumdownloads/pc_tester.py" download>PC Tester</a>
+  </div>
+
+  <div id="bonus" class="tab-content">
+    <p class="fancy-button">More coming soon!</p>
+  </div>
+
+  <button id="playButton">Play</button>
+
+  <iframe id="bg-music" width="0" height="0" style="visibility:hidden;position:absolute;" allow="autoplay" src=""></iframe>
+
+  <script>
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Falling stars
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      stars = [];
+      for (let i = 0; i < 100; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 2,
+          speed: Math.random() * 1.5 + 0.5
+        });
+      }
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'white';
+      stars.forEach(star => {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += star.speed;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      });
+      requestAnimationFrame(drawStars);
+    }
+    drawStars();
+
+    // Music play button
+    document.getElementById('playButton').addEventListener('click', () => {
+      const iframe = document.getElementById('bg-music');
+      iframe.src = 'https://www.youtube.com/embed/B9synWjqBn8?autoplay=1&loop=1&playlist=B9synWjqBn8';
+    });
+  </script>
+</body>
+</html>

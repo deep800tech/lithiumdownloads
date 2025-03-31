@@ -87,6 +87,13 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    #audioWrapper {
+      opacity: 0;
+      transition: opacity 2s ease-in;
+    }
+    #audioWrapper.fade-in {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -109,15 +116,17 @@
     Site Info
   </footer>
 
-  <!-- Embed YouTube video in the background (muted autoplay loop) -->
-  <iframe
-    id="bg-music"
-    src="https://www.youtube.com/embed/B9synWjqBn8?autoplay=1&loop=1&playlist=B9synWjqBn8&mute=1"
-    frameborder="0"
-    allow="autoplay"
-    allowfullscreen
-    style="position: absolute; width: 0; height: 0; visibility: hidden;">
-  </iframe>
+  <!-- Fade-in YouTube audio wrapper -->
+  <div id="audioWrapper">
+    <iframe
+      id="bg-music"
+      src="https://www.youtube.com/embed/B9synWjqBn8?autoplay=1&loop=1&playlist=B9synWjqBn8"
+      frameborder="0"
+      allow="autoplay"
+      allowfullscreen
+      style="width: 0; height: 0; visibility: hidden;">
+    </iframe>
+  </div>
 
   <script>
     // Tab Switcher
@@ -185,6 +194,11 @@
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
     drawStars();
+
+    // Trigger fade-in on load
+    window.addEventListener("load", () => {
+      document.getElementById("audioWrapper").classList.add("fade-in");
+    });
   </script>
 </body>
 </html>

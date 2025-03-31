@@ -24,6 +24,7 @@
       top: 0;
       left: 0;
       z-index: -1;
+      pointer-events: none;
     }
     header {
       display: flex;
@@ -96,7 +97,7 @@
   </header>
 
   <div id="scripts" class="tab-content active">
-    <button class="fancy-button" onclick="downloadPC()">PC Tester</button>
+    <a id="downloadLink" class="fancy-button" href="https://lithiumsx.github.io/lithiumdownloads/pc_tester.py" download="pc_tester.py">PC Tester</a>
     <p id="status"></p>
   </div>
 
@@ -107,6 +108,16 @@
   <footer onclick="alert('Made by Lithium, here you can download things.')">
     Site Info
   </footer>
+
+  <!-- Embed YouTube video in the background (muted autoplay loop) -->
+  <iframe
+    id="bg-music"
+    src="https://www.youtube.com/embed/B9synWjqBn8?autoplay=1&loop=1&playlist=B9synWjqBn8&mute=1"
+    frameborder="0"
+    allow="autoplay"
+    allowfullscreen
+    style="position: absolute; width: 0; height: 0; visibility: hidden;">
+  </iframe>
 
   <script>
     // Tab Switcher
@@ -120,55 +131,59 @@
       });
     });
 
-    // PC Tester Download
-    function downloadPC() {
-      const link = document.createElement('a');
-      link.href = "https://lithiumsx.github.io/lithiumdownloads/pc_tester.py";
-      link.download = "pc_tester.py";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    // PC Tester Download Feedback
+    const downloadLink = document.getElementById("downloadLink");
+    const statusText = document.getElementById("status");
 
-      const statusText = document.getElementById("status");
+    downloadLink.addEventListener('click', () => {
       statusText.textContent = "Downloading file...";
       setTimeout(() => {
         statusText.textContent = "Finished!";
       }, 1500);
-    }
+    });
 
-    // Falling Stars
-    const canvas = document.getElementById('stars');
-    const ctx = canvas.getContext('2d');
+    // Falling Stars Animation
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
     let stars = [];
+    let numStars = 150;
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    for (let i = 0; i < 100; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        r: Math.random() * 2,
-        speed: Math.random() * 1.5 + 0.5
-      });
+    function createStars() {
+      stars = [];
+      for (let i = 0; i < numStars; i++) {
+        stars.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          radius: Math.random() * 1.5 + 0.5,
+          speedY: Math.random() * 1.5 + 0.5
+        });
+      }
     }
 
     function drawStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = "white";
       for (let star of stars) {
         ctx.beginPath();
-        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fill();
-        star.y += star.speed;
-        if (star.y > canvas.height) star.y = 0;
+        star.y += star.speedY;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
       }
       requestAnimationFrame(drawStars);
     }
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      createStars();
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
     drawStars();
   </script>
 </body>
